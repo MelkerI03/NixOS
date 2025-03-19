@@ -1,6 +1,9 @@
 { inputs, pkgs, ... }:
 {
-  imports = [ inputs.nixvim.homeManagerModules.nixvim ];
+  imports = [ 
+    inputs.nixvim.homeManagerModules.nixvim 
+    ./hyprland/config.nix
+  ];
 
   home.username = "viking";
   home.homeDirectory = "/home/viking";
@@ -11,6 +14,11 @@
     # Core
     kitty
     tmux
+    hyprland
+
+    # Languages
+    python314
+    haskell.compiler.native-bignum.ghcHEAD
 
     # QoL Tools
     eza
@@ -20,6 +28,8 @@
     btop
     zip
     unzip
+    thefuck
+    fd
 
     # Hyprland Utils
     waybar
@@ -31,11 +41,29 @@
     foot
   ];
 
-  gtk.enable = true;
-  qt.enable = true;
-
   #----=[ NixVim ]=----#
   programs.nixvim = import ./nixvim/config.nix;
+
+  #----=[ Zsh ]=----#
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+    # autosuggestions.enable = true;
+    syntaxHighlighting.enable = true;
+
+    shellAliases = {
+      ll = "ls -liah";
+      update = "sudo nixos-rebuild switch --flake /etc/nixos#nixosVM";
+    };
+
+    history.size = 10000;
+
+    oh-my-zsh = {
+      enable = true;
+      plugins = [ "git" "thefuck" ];
+      theme = "frontcube";
+    };
+  };
 
   #----=[ Kitty ]=----#
   programs.kitty = {
@@ -61,11 +89,29 @@
       sensible
       yank
       catppuccin
+      vim-tmux-navigator
     ];
     extraConfig = ''
       set -g mouse on
       bind - split-window -v
       bind | split-window -h
+
+      # Enable default pane navigation
+      bind h select-pane -L
+      bind j select-pane -D
+      bind k select-pane -U
+      bind l select-pane -R
+    '';
+  };
+
+  #----=[ SSH ]=----#
+  programs.ssh = {
+    enable = true;
+    extraConfig = ''
+      Host github.com
+        IdentityFile = ~/.ssh/id_ed25519
+        User git
+        StrictHostKeyChecking accept-new
     '';
   };
 
