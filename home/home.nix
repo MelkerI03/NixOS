@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ config, inputs, pkgs, ... }:
 {
   imports = [ 
     inputs.nixvim.homeManagerModules.nixvim 
@@ -35,10 +35,7 @@
     waybar
     swaylock
     rofi
-
-    # Other
-    glfw-wayland
-    foot
+    hyprpaper
   ];
 
   #----=[ NixVim ]=----#
@@ -83,7 +80,7 @@
   #----=[ Tmux ]=----#
   programs.tmux = {
     enable = true;
-    shortcut = "a";
+    shortcut = "b";
     terminal = "tmux-256color";
     plugins = with pkgs.tmuxPlugins; [
       sensible
