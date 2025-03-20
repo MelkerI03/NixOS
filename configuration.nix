@@ -12,9 +12,18 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  nix.gc = {
+    automatic = true;
+    dates = "daily";
+    options = "--delete-older-than 7d";
+  };
+
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  # Limit boot menu entries
+  boot.loader.systemd-boot.configurationLimit = 7;
 
   networking.hostName = "nixosVM";
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.

@@ -14,17 +14,11 @@ in
         kb_options = "caps:escape";
       };
 
+
       bind = [
         "${mod}, RETURN, exec, ${term}"
         "${mod}, M, exit"
       ];
-
-      touchpad = {
-        # natural_scroll = false;
-      };
-
-      decoration = {
-      };
     };
   };
 }
