@@ -132,6 +132,7 @@
   # };
 
   virtualisation.virtualbox.guest.enable = true;
+  home-manager.backupFileExtension = "backup";
 
   system.stateVersion = "25.05";
 

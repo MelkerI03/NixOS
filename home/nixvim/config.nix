@@ -1,12 +1,12 @@
 { pkgs, ... }:
 {
+  enable = true;
+
   imports = [
     ./lsp.nix
     ./keymaps.nix
     ./vars.nix
   ];
-
-  enable = true;
 
   # colorschemes.catppuccin.enable = true;
   colorschemes.monokai-pro.enable = true;
@@ -31,4 +31,6 @@
     comment-nvim
     nvim-autopairs
   ];
+
+  clipboard.register = "unnamedplus";
 }
