@@ -22,15 +22,23 @@
   # Limit boot menu entries
   boot.loader.systemd-boot.configurationLimit = 7;
 
-  networking.hostName = "nixos";
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  swapDevices = [
+    { device = "/swapfile"; }
+  ];
 
-  # Set your time zone.
+  boot = {
+    kernelParams = [ "resume=/swapfile" "resume_offset=167344128" ];
+    resumeDevice = "/swapfile";
+  };
+
+  networking.hostName = "nixos";
+  networking.networkmanager.enable = true;
+
   time.timeZone = "Europe/Stockholm";
 
   # Select internationalisation properties.
   console = {
-    font = "Lat2-Terminus16";
+    font = "FiraCode Nerd Font Mono";
     useXkbConfig = true;
   };
 
@@ -49,6 +57,7 @@
     vim
     wget
     curl
+    gparted
     firefox
     git
     tealdeer
