@@ -5,8 +5,9 @@ let
 in
 {
   imports = [
-    ./waybar/config.nix
     ./hyprpaper/config.nix
+    ./swaylock/config.nix
+    ./waybar/config.nix
   ];
 
   home.packages = with pkgs; [
@@ -62,6 +63,8 @@ in
         "${mod}, SPACE, exec, rofi -show drun"
 
         "${mod}, Q, killactive"
+
+        "${mod}, L, exec, swaylock"
 
         "${mod}, 1, workspace, 1"
         "${mod}, 2, workspace, 2"

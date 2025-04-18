@@ -31,6 +31,8 @@
     resumeDevice = "/swapfile";
   };
 
+  security.pam.services.waylock = {};
+
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
