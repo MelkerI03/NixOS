@@ -33,13 +33,13 @@
     {
       mode = "n";
       key = "gd";
-      action = "vim.lsp.buf.definition";
+      action = "<cmd>lua vim.lsp.buf.definition()<cr>";
       options.silent = true;
     }
     {
       mode = "n";
       key = "gD";
-      action = "vim.lsp.buf.declaration";
+      action = "<cmd>lua vim.lsp.buf.declaration()<cr>";
       options.silent = true;
     }
     {
@@ -51,37 +51,37 @@
     {
       mode = "n";
       key = "K";
-      action = "vim.lsp.buf.hover";
+      action = "<cmd>lua vim.lsp.buf.hover()<cr>";
       options.silent = true;
     }
     {
       mode = "n";
       key = "<leader>ca";
-      action = "vim.lsp.buf.code_action";
+      action = "<cmd>lua vim.lsp.buf.code_action()<cr>";
       options.silent = true;
     }
     {
       mode = "n";
       key = "<leader>rn";
-      action = "vim.lsp.buf.rename";
+      action = "<cmd>lua vim.lsp.buf.rename()<cr>";
       options.silent = true;
     }
     {
       mode = "n";
       key = "<leader>e";
-      action = "vim.diagnostic.open_float";
+      action = "<cmd>lua vim.diagnostic.open_float()<cr>";
       options.silent = true;
     }
     {
       mode = "n";
       key = "]d";
-      action = "vim.diagnostic.goto_next";
+      action = "<cmd>lua vim.diagnostic.goto_next()<cr>";
       options.silent = true;
     }
     {
       mode = "n";
       key = "[d";
-      action = "vim.diagnostic.goto_prev";
+      action = "<cmd>lua vim.diagnostic.goto_prev()<cr>";
       options.silent = true;
     }
   ];
