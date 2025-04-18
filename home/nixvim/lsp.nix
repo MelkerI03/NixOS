@@ -9,6 +9,7 @@
         enable = true;
         installGhc = true;
       };
+      zls.enable = true;
     };
   };
 }
