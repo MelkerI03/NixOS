@@ -1,7 +1,4 @@
-# Edit this configuration file to define what should be installed on your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
-{ config, lib, pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   nix.settings.experimental-features = [ "nix-command" "flakes"];
@@ -25,37 +22,29 @@
   # Limit boot menu entries
   boot.loader.systemd-boot.configurationLimit = 7;
 
-  networking.hostName = "nixosVM";
+  networking.hostName = "nixos";
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
   # Set your time zone.
   time.timeZone = "Europe/Stockholm";
 
   # Select internationalisation properties.
-  # i18n.defaultLocale = "sv_SE.UTF-8";
   console = {
     font = "Lat2-Terminus16";
-    useXkbConfig = true; # use xkb.options in tty.
+    useXkbConfig = true;
   };
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  services.libinput.enable = true;
-
-  # Define a user account.
   users.groups.viking = {};
   users.users.viking = {
     isNormalUser = true;
     group = "viking";
-    extraGroups = [ "wheel" "input" "vboxsf" ];
+    extraGroups = [ "wheel" "input" ];
     shell = pkgs.zsh;
   };
 
-  programs.firefox.enable = true;
-  programs.fish.enable = true;
   programs.zsh.enable = true;
+  programs.ssh.startAgent = true;
 
-
-  # List packages installed in system profile. To search, run:
   environment.systemPackages = with pkgs; [
     vim
     wget
@@ -66,12 +55,14 @@
     file
     fish
     alacritty
-    # wayland
-    # wlroots
-    # xorg.libX11
-    # xorg.libXcursor
-    # xorg.libXrandr
-    # xorg.libXi
+    (catppuccin-sddm.override {
+      flavor = "mocha";
+      font = "FiraCode Nerd Font Mono";
+      fontSize = "15";
+
+      background = "${./home/wallpapers/kizu.jpg}";
+      loginBackground = true;
+    })
   ];
 
   environment.variables = {
@@ -91,12 +82,13 @@
       fira-code-symbols
       proggyfonts
       liberation_ttf
+      adwaita-icon-theme
     ];
 
     fontconfig = {
       defaultFonts = {
         serif = [ "Liberation Serif" ];
-	monospace = [ "Fira Code Mono" ];
+	monospace = [ "Fira Code Nerd Font Mono" ];
       };
     };
   };
@@ -114,24 +106,51 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  # Enable Bluetooth
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+
   services.openssh.enable = true;
   services.xserver.enable = true;
 
   services.displayManager.sddm = {
     enable = true;
     wayland.enable = true;
+    theme = "catppuccin-mocha";
+    package = pkgs.kdePackages.sddm;
   };
 
-
-  services.xserver.videoDrivers = [ "virtio" ];
+  # Enable hardware acceleration
   hardware.graphics.enable = true;
+  hardware.graphics.enable32Bit = true;
 
-  # hardware.nvidia = {
-  #   modesetting.enable = true;
-  #   powerManagement.enable = true;
-  # };
+  # Enable NVIDIA proprietary driver
+  services.xserver.videoDrivers = [ "nvidia" ];
 
-  virtualisation.virtualbox.guest.enable = true;
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement.enable = true;
+    open = false;
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    prime = {
+      sync.enable = true;
+      intelBusId = "PCI:0:2:0";
+      nvidiaBusId = "PCI:1:0:0";
+    };
+  };
+
+  # ONLY Nvidia
+  environment.variables = {
+    WLR_RENDERER_ALLOW_SOFTWARE = "1";
+    WLR_NO_HARDWARE_CURSORS = "1";
+    LIBVA_DRIVER_NAME = "nvidia";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    GBM_BACKEND = "nvidia-drm";
+    __NV_PRIME_RENDER_OFFLOAD = "1";
+    __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
+  };
+
   home-manager.backupFileExtension = "backup";
 
   system.stateVersion = "25.05";

@@ -8,13 +8,12 @@
     nixvim.url = "github:nix-community/nixvim";
   };
 
-  outputs = { self, nixpkgs, home-manager, hyprland, nixvim, ... }@inputs:
+  outputs = { nixpkgs, home-manager, hyprland, ... }@inputs:
   let 
     system = "x86_64-linux";
-    pkgs = nixpkgs.legacyPackages.${system};
   in {
     nixosConfigurations = {
-      nixosVM = nixpkgs.lib.nixosSystem {
+      nixos = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
           ./configuration.nix
