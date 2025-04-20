@@ -140,7 +140,7 @@ in
 
   qt = {
     enable = true;
-    platformTheme.name = "adwaita"; # Use qt5ct/qt6ct for theme configuration
+    platformTheme.name = "adwaita";
     style = {
       name = "Adwaita-dark";
       package = pkgs.adwaita-qt6;
