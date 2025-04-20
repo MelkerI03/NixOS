@@ -35,6 +35,7 @@
     thefuck
     fd
     feh
+    wev
 
     xfce.thunar
 

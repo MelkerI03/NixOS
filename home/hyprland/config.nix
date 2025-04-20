@@ -21,6 +21,9 @@ in
     adwaita-qt6
     xdg-desktop-portal-gtk
     qt6ct
+
+    playerctl
+    wireplumber
   ];
 
   wayland.windowManager.hyprland = {
@@ -85,6 +88,14 @@ in
         "SUPER_SHIFT, 7, moveToWorkspace, 7" 
         "SUPER_SHIFT, 8, moveToWorkspace, 8" 
         "SUPER_SHIFT, 9, moveToWorkspace, 9" 
+
+        # Multimedia keybindings
+        ", XF86AudioNext, exec, playerctl next"
+        ", XF86AudioPrev, exec, playerctl previous"
+        ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", XF86AudioPlay, exec, playerctl play-pause"
       ];
 
       decoration = {
