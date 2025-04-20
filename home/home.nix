@@ -40,6 +40,7 @@
 
     # Other
     steam
+    spotify
   ];
 
   # Enable Home-Manager
