@@ -22,15 +22,6 @@
   # Limit boot menu entries
   boot.loader.systemd-boot.configurationLimit = 7;
 
-  swapDevices = [
-    { device = "/swapfile"; }
-  ];
-
-  boot = {
-    kernelParams = [ "resume=/swapfile" "resume_offset=167344128" ];
-    resumeDevice = "/swapfile";
-  };
-
   security.pam.services.waylock = {};
 
   networking.hostName = "nixos";
@@ -64,7 +55,6 @@
     git
     tealdeer
     file
-    fish
     alacritty
     (catppuccin-sddm.override {
       flavor = "mocha";

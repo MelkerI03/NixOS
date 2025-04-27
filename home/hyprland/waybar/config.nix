@@ -32,7 +32,7 @@
         "custom/notification" = {
           tooltip = false;
           format = "";
-          on-click = "swaync-client -t -sw";
+          # on-click = "swaync-client -t -sw";
           escape = true;
         };
 
