@@ -13,7 +13,6 @@ in
   home.packages = with pkgs; [
     hyprpaper
     hyprpicker
-    # swaynotificationcenter
     swaylock
 
     gnome-themes-extra
@@ -98,13 +97,6 @@ in
         ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && ${config.xdg.configHome}/scripts/volume-notification.sh"
         ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && ${config.xdg.configHome}/scripts/volume-notification.sh"
         ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ${config.xdg.configHome}/scripts/volume-notification.sh"
-
-        # ", XF86AudioPlay, exec, ${config.xdg.configHome}/scripts/media-play-pause.sh"
-        # ", XF86AudioNext, exec, playerctl next && notify-send -i media-skip-forward 'Media' 'Next Track'"
-        # ", XF86AudioPrev, exec, playerctl previous && notify-send -i media-skip-backward 'Media' 'Previous Track'"
-        # ", XF86AudioRaiseVolume, exec, ${config.xdg.configHome}/scripts/volume-up.sh"
-        # ", XF86AudioLowerVolume, exec, ${config.xdg.configHome}/scripts/volume-down.sh"
-        # ", XF86AudioMute, exec, ${config.xdg.configHome}/scripts/volume-mute.sh"
       ];
 
       decoration = {
@@ -198,31 +190,6 @@ in
     '';
     executable = true;
   };
-
-  # services.dunst = {
-  #   enable = true;
-  #   settings = {
-  #     global = {
-  #       origin = "bottom-center";
-  #       offset = "(0, 60)";
-  #       geometry = "300x60";
-  #       icon_position = "left";
-  #       padding = 8;
-  #       frame_width = 0;
-  #       markup = "no";
-  #       font = "Monospace 10";
-  #       progress_bar = true;
-  #       progress_bar_height = 6;
-  #       progress_bar_frame_width = 0;
-  #       format = "<icon>      ";
-  #     };
-  #     volume = {
-  #       summary = "Volume";
-  #       format = "&lt;icon&gt; &lt;progress&gt;";
-  #       history_ignore = true;
-  #     };
-  #   };
-  # };
 
   xdg.configFile."dunst/dunstrc".text = ''
       [global]
