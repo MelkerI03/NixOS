@@ -22,7 +22,7 @@
   # Limit boot menu entries
   boot.loader.systemd-boot.configurationLimit = 7;
 
-  security.pam.services.waylock = {};
+  security.pam.services.hyprlock = {};
 
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;

@@ -6,14 +6,13 @@ in
 {
   imports = [
     ./hyprpaper/config.nix
-    ./swaylock/config.nix
+    ./hyprlock/config.nix
     ./waybar/config.nix
   ];
 
   home.packages = with pkgs; [
     hyprpaper
     hyprpicker
-    swaylock
 
     gnome-themes-extra
     papirus-icon-theme
@@ -68,7 +67,7 @@ in
 
         "${mod}, Q, killactive"
 
-        "${mod}, L, exec, swaylock"
+        "${mod}, L, exec, hyprlock"
 
         "${mod}, 1, workspace, 1"
         "${mod}, 2, workspace, 2"
