@@ -96,6 +96,11 @@ in
         ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && ${config.xdg.configHome}/scripts/volume-notification.sh"
         ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && ${config.xdg.configHome}/scripts/volume-notification.sh"
         ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ${config.xdg.configHome}/scripts/volume-notification.sh"
+
+      ];
+
+      bindl = [
+        ", switch:on:Lid Switch, exec, systemctl hibernate"
       ];
 
       decoration = {

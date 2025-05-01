@@ -121,10 +121,6 @@
     package = pkgs.kdePackages.sddm;
   };
 
-  services.logind = {
-    lidSwitch = "hibernate";
-  };
-
   # Enable hardware acceleration
   hardware.graphics.enable = true;
   hardware.graphics.enable32Bit = true;
