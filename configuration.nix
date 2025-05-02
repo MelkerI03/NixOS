@@ -56,6 +56,7 @@
     tealdeer
     file
     alacritty
+    wineWowPackages.stable
     (catppuccin-sddm.override {
       flavor = "mocha";
       font = "FiraCode Nerd Font Mono";

@@ -41,6 +41,7 @@
 
     # Other
     steam
+    lutris
     spotify
   ];
 
