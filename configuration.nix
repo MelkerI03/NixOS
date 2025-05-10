@@ -75,6 +75,7 @@
     VISUAL = "nvim";
     GIT_EDITOR = "nvim";
     SYSTEMD_EDITOR = "nvim";
+    DIRENV_LOG_FORMAT = "";
   };
 
   #----=[ Fonts ]=----#

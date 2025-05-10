@@ -5,6 +5,7 @@
     inputs.nixvim.homeManagerModules.nixvim 
     ./hyprland/config.nix
     ./nixvim/config.nix
+    ./direnv/config.nix
     ./kitty/config.nix
     ./tmux/config.nix
     ./rofi/config.nix
