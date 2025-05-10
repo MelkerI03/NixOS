@@ -21,7 +21,6 @@
   home.packages = with pkgs; [
     # Languages
     python314
-    haskell.compiler.native-bignum.ghcHEAD
     zig_0_13
 
     # QoL Tools
