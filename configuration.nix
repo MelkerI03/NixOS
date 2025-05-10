@@ -49,6 +49,8 @@
   environment.systemPackages = with pkgs; [
     vim
     wget
+    gcc
+    gdb
     curl
     gparted
     firefox
@@ -156,6 +158,5 @@
   home-manager.backupFileExtension = "backup";
 
   system.stateVersion = "25.05";
-
 }
 
