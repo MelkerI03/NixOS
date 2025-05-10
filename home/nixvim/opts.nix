@@ -21,4 +21,8 @@
     ignorecase = true;
     smartcase = true;
   };
+
+  diagnostic.settings = { 
+    virtual_lines = true;
+  };
 }

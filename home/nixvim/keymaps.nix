@@ -15,6 +15,26 @@
       options.silent = true;
     }
 
+    # Buffers
+    {
+      mode = "n";
+      key = "<leader>bl";
+      action = "<cmd>blast<CR>";
+      options.silent = true;
+    }
+    {
+      mode = "n";
+      key = "<leader>bn";
+      action = "<cmd>bnext<CR>";
+      options.silent = true;
+    }
+    {
+      mode = "n";
+      key = "<leader>bp";
+      action = "<cmd>bprev<CR>";
+      options.silent = true;
+    }
+
     # Telescope
     {
       mode = "n";
