@@ -2,7 +2,7 @@
 
 {
   imports = [ 
-    inputs.nixvim.homeManagerModules.nixvim 
+    inputs.nixvim.homeModules.nixvim 
     ./hyprland/config.nix
     ./nixvim/config.nix
     ./direnv/config.nix
@@ -12,6 +12,7 @@
     ./zsh/config.nix
     ./cli/config.nix
     ./ssh/config.nix
+    ./nh/config.nix
   ];
 
   home.username = "viking";
@@ -21,7 +22,13 @@
   #----=[ Packages ]=----#
   home.packages = with pkgs; [
     # Languages
-    python314
+    (python3.withPackages (ps: with ps; [
+      requests
+      pandas
+      flask
+      dbus-python
+    ]))
+    # python314
     zig_0_13
 
     # QoL Tools
@@ -32,7 +39,6 @@
     btop
     zip
     unzip
-    thefuck
     fd
     feh
     wev

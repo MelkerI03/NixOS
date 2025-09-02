@@ -31,7 +31,7 @@
 
   # Select internationalisation properties.
   console = {
-    font = "FiraCode Nerd Font Mono";
+    font = "Lat2-Terminus16";
     useXkbConfig = true;
   };
 
@@ -46,25 +46,111 @@
   programs.zsh.enable = true;
   programs.ssh.startAgent = true;
 
+  nixpkgs.overlays = [
+    (final: prev: {
+      bootdev-cli = prev.callPackage ./packages/bootdev.nix { };
+    })
+  ];
+
   environment.systemPackages = with pkgs; [
     vim
+    neovim
     wget
-    gcc
     gdb
     curl
     gparted
     firefox
     git
     tealdeer
-    file
     alacritty
+    btop
+    zip
+    unzip
+    gnupg
+    brightnessctl
+
+    # Networking & troubleshooting
+    inetutils
+    netcat
+    traceroute
+    mtr
+
+    # Development
+    gcc
+    gnumake
+    pkg-config
+    python3
+
+    # Utilities & quality of life
+    fzf
+    ripgrep
+    bat
+    fd
+    tmux
+    tree
+
+    # Shells & system tools
+    zsh
+    fish
+    starship
+    direnv
+    ncdu
+    lsof
+    file
+    man-pages
+
+    # Development
+    clang
+    cmake
+    ninja
+    rustc
+    cargo
+    go
+    lua
+    jq
+    shellcheck
+    vale
+    ghc 
+    cabal-install 
+    haskell-language-server
+    hlint 
+    ormolu 
+    fourmolu 
+    stylish-haskell 
+    ghcid 
+    python313Packages.dbus-python
+
+    # Networking & security
+    tcpdump
+    nmap
+    whois
+    ipcalc
+    bind
+    openssh
+
+    # File tools & misc utilities
+    atool
+    rsync
+    rclone
+    xxd
+    dos2unix
+    moreutils
+    age
+
+    # Nix helpers
+    cabal2nix 
+
+    rpi-imager
+    adwaita-qt
+    adwaita-icon-theme
+
     wineWowPackages.stable
     (catppuccin-sddm.override {
       flavor = "mocha";
       font = "FiraCode Nerd Font Mono";
       fontSize = "15";
 
-      background = "${./home/wallpapers/kizu.jpg}";
+      background = "${./home/wallpapers/camel.png}";
       loginBackground = true;
     })
   ];
@@ -142,6 +228,20 @@
       sync.enable = true;
       intelBusId = "PCI:0:2:0";
       nvidiaBusId = "PCI:1:0:0";
+    };
+  };
+
+  # Power Management
+  services.thermald.enable = true;
+  services.auto-cpufreq.enable = true;
+  services.auto-cpufreq.settings = {
+    battery = {
+      governor = "powersave";
+      turbo = "never";
+    };
+    charger = {
+      governor = "performance";
+      turbo = "auto";
     };
   };
 

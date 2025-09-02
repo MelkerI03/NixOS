@@ -7,7 +7,7 @@
 
     shellAliases = {
       ll = "ls -liah";
-      update = "sudo nixos-rebuild switch --flake /etc/nixos#nixos";
+      update = "sudo nh os switch /etc/nixos/flake.nix";
       svim = "sudo -E nvim";
       vim = "nvim";
       vi = "nvim";
@@ -19,7 +19,7 @@
 
     oh-my-zsh = {
       enable = true;
-      plugins = [ "git" "thefuck" ];
+      plugins = [ "git" ];
       theme = "frontcube";    # Really nice theme
     };
   };

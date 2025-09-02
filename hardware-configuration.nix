@@ -20,7 +20,7 @@
     "resume_offset=10586112"
   ];
 
-  services.logind.lidSwitch = "ignore";
+  services.logind.settings.Login.HandleLidSwitch = "ignore";
 
   fileSystems."/" = { 
     device = "/dev/disk/by-uuid/9459f873-20bf-46dd-8b8b-2b9d8d22f43a";

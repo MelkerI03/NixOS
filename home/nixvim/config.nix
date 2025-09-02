@@ -41,6 +41,7 @@
           };
         };
       };
+
       luasnip.enable = true;
     };
 
@@ -48,8 +49,22 @@
       vim-sleuth
       comment-nvim
       nvim-autopairs
+      leetcode-nvim
     ];
 
     clipboard.register = "unnamedplus";
+
+    extraConfigLua = ''
+      require("leetcode").setup({
+        lang = "python",
+      })
+
+      -- Remove trailing whitespaces on save
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        buffer = 0,
+        -- pattern = "*",
+        command = [[%s/\\s\\+$//e]],
+      })
+    '';
   };
 }

@@ -10,7 +10,7 @@
       };
 
       background = {
-        path = "/home/viking/Pictures/Wallpapers/kizu.jpg";
+        path = "/home/viking/Pictures/Wallpapers/camel.png";
         blur_passes = 1;
       };
 
