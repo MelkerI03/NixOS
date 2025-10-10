@@ -7,27 +7,42 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    hyprland.url = "github:hyprwm/Hyprland";
-    nixvim.url = "github:nix-community/nixvim";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
+    determinate-nix.url = "github:DeterminateSystems/nix";
   };
 
-  outputs = { nixpkgs, home-manager, ... }@inputs:
-  let 
-    system = "x86_64-linux";
-  in {
-    nixosConfigurations = {
-      nixos = nixpkgs.lib.nixosSystem {
-        inherit system;
-        modules = [
-          ./configuration.nix
-          home-manager.nixosModules.home-manager {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.viking = import ./home/home.nix;
-            home-manager.extraSpecialArgs = { inherit inputs; };
-          }
-        ];
+  outputs =
+    {
+      nixpkgs,
+      home-manager,
+      nixos-hardware,
+      determinate-nix,
+      ...
+    }:
+    let
+      system = "x86_64-linux";
+    in
+    {
+      nixosConfigurations = {
+        nixos = nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules = [
+            ./configuration.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+            }
+            nixos-hardware.nixosModules.dell-xps-15-9500-nvidia
+
+            (
+              { pkgs, ... }:
+              {
+                nix.package = determinate-nix.packages.${pkgs.system}.default;
+              }
+            )
+          ];
+        };
       };
     };
-  };
 }

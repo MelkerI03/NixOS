@@ -1,263 +1,171 @@
-{ config, pkgs, ... }:
-
 {
-  nix.settings.experimental-features = [ "nix-command" "flakes"];
-
+  lib,
+  config,
+  pkgs,
+  ...
+}:
+{
   imports = [
     ./hardware-configuration.nix
+    ./programs/config.nix
   ];
+
+  nix = {
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+
+    gc = {
+      automatic = true;
+      dates = "daily";
+      options = "--delete-older-than 7d";
+    };
+  };
 
   nixpkgs.config.allowUnfree = true;
 
-  nix.gc = {
-    automatic = true;
-    dates = "daily";
-    options = "--delete-older-than 7d";
-  };
+  boot = {
+    # Use the systemd-boot EFI boot loader.
+    loader.systemd-boot.enable = true;
+    loader.systemd-boot.configurationLimit = 7;
+    loader.efi.canTouchEfiVariables = true;
+    loader.efi.efiSysMountPoint = "/boot";
 
-  # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  # Limit boot menu entries
-  boot.loader.systemd-boot.configurationLimit = 7;
-
-  security.pam.services.hyprlock = {};
-
-  networking.hostName = "nixos";
-  networking.networkmanager.enable = true;
-
-  time.timeZone = "Europe/Stockholm";
-
-  # Select internationalisation properties.
-  console = {
-    font = "Lat2-Terminus16";
-    useXkbConfig = true;
-  };
-
-  users.groups.viking = {};
-  users.users.viking = {
-    isNormalUser = true;
-    group = "viking";
-    extraGroups = [ "wheel" "input" ];
-    shell = pkgs.zsh;
-  };
-
-  programs.zsh.enable = true;
-  programs.ssh.startAgent = true;
-
-  nixpkgs.overlays = [
-    (final: prev: {
-      bootdev-cli = prev.callPackage ./packages/bootdev.nix { };
-    })
-  ];
-
-  environment.systemPackages = with pkgs; [
-    vim
-    neovim
-    wget
-    gdb
-    curl
-    gparted
-    firefox
-    git
-    tealdeer
-    alacritty
-    btop
-    zip
-    unzip
-    gnupg
-    brightnessctl
-
-    # Networking & troubleshooting
-    inetutils
-    netcat
-    traceroute
-    mtr
-
-    # Development
-    gcc
-    gnumake
-    pkg-config
-    python3
-
-    # Utilities & quality of life
-    fzf
-    ripgrep
-    bat
-    fd
-    tmux
-    tree
-
-    # Shells & system tools
-    zsh
-    fish
-    starship
-    direnv
-    ncdu
-    lsof
-    file
-    man-pages
-
-    # Development
-    clang
-    cmake
-    ninja
-    rustc
-    cargo
-    go
-    lua
-    jq
-    shellcheck
-    vale
-    ghc 
-    cabal-install 
-    haskell-language-server
-    hlint 
-    ormolu 
-    fourmolu 
-    stylish-haskell 
-    ghcid 
-    python313Packages.dbus-python
-
-    # Networking & security
-    tcpdump
-    nmap
-    whois
-    ipcalc
-    bind
-    openssh
-
-    # File tools & misc utilities
-    atool
-    rsync
-    rclone
-    xxd
-    dos2unix
-    moreutils
-    age
-
-    # Nix helpers
-    cabal2nix 
-
-    rpi-imager
-    adwaita-qt
-    adwaita-icon-theme
-
-    wineWowPackages.stable
-    (catppuccin-sddm.override {
-      flavor = "mocha";
-      font = "FiraCode Nerd Font Mono";
-      fontSize = "15";
-
-      background = "${./home/wallpapers/camel.png}";
-      loginBackground = true;
-    })
-  ];
-
-  environment.variables = {
-    EDITOR = "nvim";
-    SUDO_EDITOR = "nvim";
-    VISUAL = "nvim";
-    GIT_EDITOR = "nvim";
-    SYSTEMD_EDITOR = "nvim";
-    DIRENV_LOG_FORMAT = "";
-  };
-
-  #----=[ Fonts ]=----#
-  fonts = {
-    enableDefaultPackages = true;
-    packages = with pkgs; [
-      nerd-fonts.fira-code
-      fira-code
-      fira-code-symbols
-      proggyfonts
-      liberation_ttf
-      adwaita-icon-theme
+    # VM kernel modules
+    kernelModules = [
+      "kvm"
+      "kvm_intel"
     ];
 
-    fontconfig = {
-      defaultFonts = {
-        serif = [ "Liberation Serif" ];
-	monospace = [ "Fira Code Nerd Font Mono" ];
+    # Harddrive with /swap
+    resumeDevice = "/dev/disk/by-uuid/9459f873-20bf-46dd-8b8b-2b9d8d22f43a";
+
+    kernelParams = [
+      "resume=UUID=9459f873-20bf-46dd-8b8b-2b9d8d22f43a"
+      "resume_offset=10586112"
+      "usbcore.autosuspend=-1"
+    ];
+  };
+
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 16 * 1024; # 16GB
+    }
+  ];
+
+  hardware = {
+    bluetooth.enable = true;
+    bluetooth.powerOnBoot = true;
+
+    # Enable hardware acceleration
+    graphics.enable = true;
+    graphics.enable32Bit = true;
+
+    nvidia = {
+      modesetting.enable = true;
+      powerManagement = {
+        enable = true;
+        finegrained = true;
+      };
+
+      open = false;
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
+
+      prime.offload = {
+        enable = true;
+        enableOffloadCmd = true;
       };
     };
   };
 
-  programs.hyprland.enable = true;
+  security = {
+    rtkit.enable = true;
+
+    pam.services.hyprlock = { };
+  };
+
+  networking = {
+    hostName = "nixos";
+    networkmanager.enable = true;
+
+    useDHCP = lib.mkDefault true;
+  };
+
+  time.timeZone = "Europe/Stockholm";
+
+  virtualisation.libvirtd.enable = true;
+  powerManagement.powertop.enable = true;
+
+  console = {
+    useXkbConfig = true;
+  };
+
+  users = {
+    groups.viking = { };
+    users.viking = {
+      enable = true;
+
+      name = "viking";
+      home = "/home/viking/";
+      createHome = true;
+      isNormalUser = true;
+
+      group = "viking";
+      extraGroups = [
+        "wheel"
+        "input"
+        "network"
+        "libvirtd"
+      ];
+      shell = pkgs.zsh;
+    };
+  };
 
   xdg.portal.enable = true;
 
   #----=[ Services ]=----#
+  services = {
+    # Firmware
+    fwupd.enable = true;
 
-  # Configure keymap in X11
-  services.xserver.xkb.layout = "se";
-  services.xserver.xkb.options = "caps:escape";
+    # Configure keymap in X11
+    xserver.xkb.layout = "se";
+    xserver.xkb.options = "caps:escape";
 
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
+    # Enable CUPS to print documents.
+    printing.enable = true;
 
-  # Enable Bluetooth
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
+    # Bluetooth GUI
+    blueman.enable = true;
 
-  services.openssh.enable = true;
-  services.xserver.enable = true;
+    openssh.enable = true;
 
-  services.displayManager.sddm = {
-    enable = true;
-    wayland.enable = true;
-    theme = "catppuccin-mocha";
-    package = pkgs.kdePackages.sddm;
-  };
+    displayManager.sddm = {
+      enable = true;
+      wayland.enable = true;
+      theme = "catppuccin-mocha-mauve";
+      package = pkgs.kdePackages.sddm;
+    };
 
-  # Enable hardware acceleration
-  hardware.graphics.enable = true;
-  hardware.graphics.enable32Bit = true;
+    # Power Management, lid close currently crashes the system
+    thermald.enable = true;
+    upower.enable = true;
+    power-profiles-daemon.enable = true;
 
-  # Enable NVIDIA proprietary driver
-  services.xserver.videoDrivers = [ "nvidia" ];
+    logind.settings.Login = {
+      HandleLidSwitch = "suspend-then-hibernate";
+      KillUserProcesses = false;
 
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = true;
-    open = false;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-    prime = {
-      sync.enable = true;
-      intelBusId = "PCI:0:2:0";
-      nvidiaBusId = "PCI:1:0:0";
+      AllowSuspend = true;
+      AllowHibernation = true;
+      AllowHybridSleep = false;
+      AllowSuspendThenHibernate = true;
+
+      HibernateDelaySec = 30;
     };
   };
-
-  # Power Management
-  services.thermald.enable = true;
-  services.auto-cpufreq.enable = true;
-  services.auto-cpufreq.settings = {
-    battery = {
-      governor = "powersave";
-      turbo = "never";
-    };
-    charger = {
-      governor = "performance";
-      turbo = "auto";
-    };
-  };
-
-  # ONLY Nvidia
-  environment.variables = {
-    WLR_RENDERER_ALLOW_SOFTWARE = "1";
-    WLR_NO_HARDWARE_CURSORS = "1";
-    LIBVA_DRIVER_NAME = "nvidia";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    GBM_BACKEND = "nvidia-drm";
-    __NV_PRIME_RENDER_OFFLOAD = "1";
-    __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
-  };
-
-  home-manager.backupFileExtension = "backup";
 
   system.stateVersion = "25.05";
 }
-
