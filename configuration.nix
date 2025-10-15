@@ -42,8 +42,8 @@
     resumeDevice = "/dev/disk/by-uuid/9459f873-20bf-46dd-8b8b-2b9d8d22f43a";
 
     kernelParams = [
-      "resume=UUID=9459f873-20bf-46dd-8b8b-2b9d8d22f43a"
-      "resume_offset=10586112"
+      # "resume=UUID=9459f873-20bf-46dd-8b8b-2b9d8d22f43a"
+      # "resume_offset=10586112"
       "usbcore.autosuspend=-1"
     ];
   };
@@ -129,6 +129,12 @@
   services = {
     # Firmware
     fwupd.enable = true;
+
+    # Usb
+    udisks2 = {
+      enable = true;
+      mountOnMedia = true;
+    };
 
     # Configure keymap in X11
     xserver.xkb.layout = "se";
