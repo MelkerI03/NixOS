@@ -1,13 +1,14 @@
 {
   lib,
-  config,
   pkgs,
   ...
 }:
 {
   imports = [
     ./hardware-configuration.nix
-    ./programs/config.nix
+    ./power-management.nix
+    ./nvidia.nix
+    ./packages.nix
   ];
 
   nix = {
@@ -22,6 +23,7 @@
       options = "--delete-older-than 7d";
     };
   };
+  nvidia.enable = false;
 
   nixpkgs.config.allowUnfree = true;
 
@@ -29,61 +31,59 @@
     # Use the systemd-boot EFI boot loader.
     loader.systemd-boot.enable = true;
     loader.systemd-boot.configurationLimit = 7;
+    loader.systemd-boot.consoleMode = "max"; # Maximize text size
     loader.efi.canTouchEfiVariables = true;
     loader.efi.efiSysMountPoint = "/boot";
 
-    # VM kernel modules
+    kernelParams = [ "usbcore.autosuspend=300" ];
     kernelModules = [
-      "kvm"
+      "kvm" # For VMs
       "kvm_intel"
+
+      "uvcvideo" # Webcam
     ];
 
-    # Harddrive with /swap
-    resumeDevice = "/dev/disk/by-uuid/9459f873-20bf-46dd-8b8b-2b9d8d22f43a";
-
-    kernelParams = [
-      # "resume=UUID=9459f873-20bf-46dd-8b8b-2b9d8d22f43a"
-      # "resume_offset=10586112"
-      "usbcore.autosuspend=-1"
-    ];
+    resumeDevice = "/dev/disk/by-uuid/98e5f53b-7c04-430b-bd9b-baa5a88e2d65";
   };
 
   swapDevices = [
-    {
-      device = "/swapfile";
-      size = 16 * 1024; # 16GB
-    }
+    { device = "/dev/disk/by-uuid/98e5f53b-7c04-430b-bd9b-baa5a88e2d65"; }
   ];
 
+  systemd.services."unload-thinkpad-acpi" = {
+    description = "Unload thinkpad_acpi before suspend";
+    wantedBy = [ "sleep.target" ];
+    before = [ "sleep.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.kmod}/bin/modprobe -r thinkpad_acpi";
+      ExecStop = "${pkgs.kmod}/bin/modprobe thinkpad_acpi";
+    };
+  };
+
   hardware = {
-    bluetooth.enable = true;
-    bluetooth.powerOnBoot = true;
-
-    # Enable hardware acceleration
-    graphics.enable = true;
-    graphics.enable32Bit = true;
-
-    nvidia = {
-      modesetting.enable = true;
-      powerManagement = {
-        enable = true;
-        finegrained = true;
-      };
-
-      open = false;
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
-
-      prime.offload = {
-        enable = true;
-        enableOffloadCmd = true;
-      };
+    bluetooth = {
+      enable = true;
+      powerOnBoot = true;
     };
   };
 
   security = {
+    polkit.enable = true;
     rtkit.enable = true;
 
-    pam.services.hyprlock = { };
+    pam.services = {
+      hyprlock = { };
+      kwallet = {
+        name = "kwallet";
+        enableKwallet = true;
+      };
+    };
+  };
+
+  systemd.services.fprintd = {
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig.Type = "simple";
   };
 
   networking = {
@@ -96,7 +96,6 @@
   time.timeZone = "Europe/Stockholm";
 
   virtualisation.libvirtd.enable = true;
-  powerManagement.powertop.enable = true;
 
   console = {
     useXkbConfig = true;
@@ -108,6 +107,7 @@
       enable = true;
 
       name = "viking";
+      hashedPassword = "$y$j9T$.t.wu6O5RZRooESu9KrBY.$wXp06dcetaWNNnul.7P5poo/G77v65bYU5habrmt0u.";
       home = "/home/viking/";
       createHome = true;
       isNormalUser = true;
@@ -124,11 +124,17 @@
   };
 
   xdg.portal.enable = true;
+  xdg.portal.config.common.default = "*";
+  programs.hyprland.enable = true;
 
   #----=[ Services ]=----#
   services = {
     # Firmware
     fwupd.enable = true;
+
+    # Keyring
+    gnome.gnome-keyring.enable = true;
+    dbus.packages = [ pkgs.gnome-keyring ];
 
     # Usb
     udisks2 = {
@@ -155,21 +161,15 @@
       package = pkgs.kdePackages.sddm;
     };
 
-    # Power Management, lid close currently crashes the system
-    thermald.enable = true;
-    upower.enable = true;
-    power-profiles-daemon.enable = true;
-
     logind.settings.Login = {
       HandleLidSwitch = "suspend-then-hibernate";
-      KillUserProcesses = false;
 
       AllowSuspend = true;
       AllowHibernation = true;
       AllowHybridSleep = false;
       AllowSuspendThenHibernate = true;
 
-      HibernateDelaySec = 30;
+      HibernateDelaySec = "1m";
     };
   };
 

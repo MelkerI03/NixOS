@@ -9,6 +9,7 @@
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     determinate-nix.url = "github:DeterminateSystems/nix";
+    # ragenix.url = "github:yaxitech/ragenix";
   };
 
   outputs =
@@ -17,6 +18,7 @@
       home-manager,
       nixos-hardware,
       determinate-nix,
+      # ragenix,
       ...
     }:
     let
@@ -28,12 +30,13 @@
           inherit system;
           modules = [
             ./configuration.nix
+            # ragenix.nixosModules
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
             }
-            nixos-hardware.nixosModules.dell-xps-15-9500-nvidia
+            nixos-hardware.nixosModules.lenovo-thinkpad-p1
 
             (
               { pkgs, ... }:

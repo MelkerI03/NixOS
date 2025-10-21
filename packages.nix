@@ -2,9 +2,6 @@
 {
   programs = {
     virt-manager.enable = true;
-    ssh.startAgent = true;
-
-    hyprland.enable = true;
     zsh.enable = true;
   };
 
@@ -22,6 +19,8 @@
     p7zip
     atool
     gnupg
+    usbutils
+    audit
 
     adwaita-qt
     adwaita-icon-theme
@@ -41,6 +40,7 @@
     powerstat
     lshw
     openssh
+    hyprland
 
     # File tools & misc utilities
     rsyncy
