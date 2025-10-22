@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 {
   services = {
     thermald.enable = true;
@@ -12,7 +12,7 @@
           turbo = "never";
         };
         charger = {
-          governor = "powersave";
+          governor = "performance";
           turbo = "auto";
         };
       };
@@ -27,22 +27,20 @@
     };
   };
 
-  # systemd.services."disable-mouse-autosuspend" = {
-  #   description = "Disable autosuspend for Logitech mouse reveiver";
-  #   wantedBy = [ "multi-user.target" ];
-  #   serviceConfig = {
-  #     Type = "oneshot";
-  #     ExecStart = "${pkgs.bash}/bin/bash -c 'echo on > /sys/bus/usb/devices/3-1/power/control'";
-  #     After = [
-  #       "systemd-udev-settle.service"
-  #       "multi-user.target"
-  #     ];
-  #   };
-  # };
-
   powerManagement = {
     enable = true;
     powertop.enable = true;
   };
 
+  # Laptop lid switch handling
+  services.logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
+
+  systemd.sleep.extraConfig = ''
+    AllowSuspend = yes
+    AllowHibernation = yes
+    AllowHybridSleep = no
+    AllowSuspendThenHibernate = yes
+
+    HibernateDelaySec=1m
+  '';
 }

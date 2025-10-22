@@ -160,18 +160,7 @@
       theme = "catppuccin-mocha-mauve";
       package = pkgs.kdePackages.sddm;
     };
-
-    logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
   };
-
-  systemd.sleep.extraConfig = ''
-    AllowSuspend = yes
-    AllowHibernation = yes
-    AllowHybridSleep = no
-    AllowSuspendThenHibernate = yes
-
-    HibernateDelaySec=1m
-  '';
 
   system.stateVersion = "25.05";
 }
