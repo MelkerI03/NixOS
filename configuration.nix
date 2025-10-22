@@ -161,17 +161,17 @@
       package = pkgs.kdePackages.sddm;
     };
 
-    logind.settings.Login = {
-      HandleLidSwitch = "suspend-then-hibernate";
-
-      AllowSuspend = true;
-      AllowHibernation = true;
-      AllowHybridSleep = false;
-      AllowSuspendThenHibernate = true;
-
-      HibernateDelaySec = "1m";
-    };
+    logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
   };
+
+  systemd.sleep.extraConfig = ''
+    AllowSuspend = yes
+    AllowHibernation = yes
+    AllowHybridSleep = no
+    AllowSuspendThenHibernate = yes
+
+    HibernateDelaySec=1m
+  '';
 
   system.stateVersion = "25.05";
 }
