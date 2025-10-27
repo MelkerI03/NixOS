@@ -11,7 +11,7 @@
     curl
     gparted
     chromium
-    firefox
+    librewolf
     git
     zip
     unzip
