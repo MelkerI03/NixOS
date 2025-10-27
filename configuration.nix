@@ -12,10 +12,12 @@
   ];
 
   nix = {
-    settings.experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+    };
 
     gc = {
       automatic = true;
@@ -23,6 +25,7 @@
       options = "--delete-older-than 7d";
     };
   };
+
   nvidia.enable = false;
 
   nixpkgs.config.allowUnfree = true;
@@ -88,7 +91,13 @@
 
   networking = {
     hostName = "nixos";
-    networkmanager.enable = true;
+    nameservers = [
+      "192.168.0.1"
+      "1.1.1.1"
+    ];
+    networkmanager = {
+      enable = true;
+    };
 
     useDHCP = lib.mkDefault true;
   };
