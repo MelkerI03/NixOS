@@ -141,6 +141,16 @@
     # Firmware
     fwupd.enable = true;
 
+    # Sound
+    pulseaudio.enable = false;
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      jack.enable = true;
+    };
+
     # Keyring
     gnome.gnome-keyring.enable = true;
     dbus.packages = [ pkgs.gnome-keyring ];
