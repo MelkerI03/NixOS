@@ -41,6 +41,7 @@
     lshw
     openssh
     hyprland
+    kitty
 
     # File tools & misc utilities
     rsyncy
