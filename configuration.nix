@@ -9,6 +9,7 @@
     ./power-management.nix
     ./nvidia.nix
     ./packages.nix
+    # ./sddm.nix
   ];
 
   nix = {
@@ -176,8 +177,16 @@
     };
 
     # Configure keymap in X11
-    xserver.xkb.layout = "se";
-    xserver.xkb.options = "caps:escape";
+    xserver.xkb = {
+      layout = "se";
+      options = "caps:escape";
+    };
+
+    # Mouse settings
+    libinput = {
+      mouse.accelProfile = "flat";
+      touchpad.accelProfile = "flat";
+    };
 
     # Enable CUPS to print documents.
     printing.enable = true;
@@ -187,12 +196,6 @@
 
     openssh.enable = true;
 
-    displayManager.sddm = {
-      enable = true;
-      wayland.enable = true;
-      theme = "catppuccin-mocha-mauve";
-      package = pkgs.kdePackages.sddm;
-    };
   };
 
   system.stateVersion = "25.05";

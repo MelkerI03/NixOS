@@ -9,7 +9,11 @@
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware";
     determinate-nix.url = "github:DeterminateSystems/nix";
-    # ragenix.url = "github:yaxitech/ragenix";
+    silentSDDM = {
+      url = "github:uiriansan/SilentSDDM";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    sops-nix.url = "github:Mic92/sops-nix";
   };
 
   outputs =
@@ -18,7 +22,8 @@
       home-manager,
       nixos-hardware,
       determinate-nix,
-      # ragenix,
+      silentSDDM,
+      sops-nix,
       ...
     }:
     let
@@ -30,13 +35,15 @@
           inherit system;
           modules = [
             ./configuration.nix
-            # ragenix.nixosModules
+            { _module.args.silentSDDM = silentSDDM; }
+            ./sddm.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
             }
             nixos-hardware.nixosModules.lenovo-thinkpad-p1
+            sops-nix.nixosModules.sops
 
             (
               { pkgs, ... }:

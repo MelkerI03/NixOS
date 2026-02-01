@@ -1,13 +1,12 @@
-{ inputs, pkgs, ... }:
+{ pkgs, silentSDDM, ... }:
 
 let
-  sddm-theme = inputs.silentSDDM.packages.${pkgs.system}.default.override {
-    theme = "rei"; # select the config of your choice
+  sddm-theme = silentSDDM.packages.${pkgs.system}.default.override {
+    theme = "default";
   };
 in
 {
-  environment.systemPackages = with pkgs; [
-
+  environment.systemPackages = [
     sddm-theme
     sddm-theme.test
   ];
@@ -19,4 +18,6 @@ in
     theme = sddm-theme.pname;
     extraPackages = sddm-theme.propagatedBuildInputs;
   };
+
+  qt.enable = true;
 }
