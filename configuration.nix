@@ -149,12 +149,18 @@
 
   xdg.portal.enable = true;
   xdg.portal.config.common.default = "*";
-  programs.hyprland.enable = true;
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+  };
 
   #----=[ Services ]=----#
   services = {
     # Firmware
     fwupd.enable = true;
+
+    # Network
+    tailscale.enable = true;
 
     # Sound
     pulseaudio.enable = false;

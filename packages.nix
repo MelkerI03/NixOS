@@ -50,5 +50,8 @@
     dos2unix
     moreutils
     age
+    sops
+
+    (callPackage ./vulkan-hdr-layer.nix { pname = "vulkan-hdr-layer"; })
   ];
 }

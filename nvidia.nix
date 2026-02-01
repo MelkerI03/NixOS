@@ -61,6 +61,12 @@
           nvidiaBusId = "PCI:1:0:0";
         };
       };
+
+      boot.initrd.kernelModules = [
+        "nvidia"
+        "nvidia_drm"
+        "nvidia_modeset"
+      ];
     })
 
     (lib.mkIf (!config.nvidia.enable) {
