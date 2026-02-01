@@ -26,19 +26,33 @@
     };
   };
 
-  nvidia.enable = false;
+  nvidia.enable = true;
 
   nixpkgs.config.allowUnfree = true;
 
   boot = {
-    # Use the systemd-boot EFI boot loader.
-    loader.systemd-boot.enable = true;
-    loader.systemd-boot.configurationLimit = 7;
-    loader.systemd-boot.consoleMode = "max"; # Maximize text size
-    loader.efi.canTouchEfiVariables = true;
-    loader.efi.efiSysMountPoint = "/boot";
+    loader = {
+      # Do not use, It fills the /boot dir
+      grub = {
+        enable = false;
+        efiSupport = true;
+        device = "nodev";
+      };
 
-    kernelParams = [ "usbcore.autosuspend=300" ];
+      systemd-boot = {
+        enable = true;
+        configurationLimit = 5; # auto-prune old entries
+      };
+
+      efi = {
+        canTouchEfiVariables = true;
+        efiSysMountPoint = "/boot";
+      };
+    };
+
+    kernelParams = [
+      "usbcore.autosuspend=300"
+    ];
     kernelModules = [
       "kvm" # For VMs
       "kvm_intel"
