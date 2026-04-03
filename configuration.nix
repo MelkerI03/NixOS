@@ -27,7 +27,7 @@
     };
   };
 
-  nvidia.enable = true;
+  nvidia.enable = false;
 
   nixpkgs.config.allowUnfree = true;
 
@@ -99,11 +99,6 @@
     };
   };
 
-  systemd.services.fprintd = {
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig.Type = "simple";
-  };
-
   networking = {
     hostName = "nixos";
     nameservers = [
@@ -119,14 +114,16 @@
 
   time.timeZone = "Europe/Stockholm";
 
-  virtualisation.libvirtd.enable = true;
-
   console = {
     useXkbConfig = true;
   };
 
   users = {
-    groups.viking = { };
+    groups = {
+      viking = { };
+      libvirtd.members = [ "viking" ];
+      kvm.members = [ "viking" ];
+    };
     users.viking = {
       enable = true;
 
@@ -203,6 +200,29 @@
     openssh.enable = true;
 
   };
+
+  # Set up virtualisation
+  virtualisation.libvirtd = {
+    enable = true;
+
+    # Enable TPM emulation (for Windows 11)
+    qemu = {
+      swtpm.enable = true;
+    };
+  };
+
+  # Enable USB redirection
+  virtualisation.spiceUSBRedirection.enable = true;
+
+  # Allow VM management
+
+  # Enable VM networking and file sharing
+  environment.systemPackages = with pkgs; [
+    # ... your other packages ...
+    gnome-boxes # VM management
+    dnsmasq # VM networking
+    phodav # (optional) Share files with guest VMs
+  ];
 
   system.stateVersion = "25.05";
 }

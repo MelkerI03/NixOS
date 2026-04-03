@@ -1,7 +1,7 @@
 { pkgs, silentSDDM, ... }:
 
 let
-  sddm-theme = silentSDDM.packages.${pkgs.system}.default.override {
+  sddm-theme = silentSDDM.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
     theme = "default";
   };
 in

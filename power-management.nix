@@ -35,12 +35,12 @@
   # Laptop lid switch handling
   services.logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
 
-  systemd.sleep.extraConfig = ''
-    AllowSuspend = yes
-    AllowHibernation = yes
-    AllowHybridSleep = no
-    AllowSuspendThenHibernate = yes
+  systemd.sleep.settings.Sleep = {
+    AllowSuspend = "yes";
+    AllowHibernation = "yes";
+    AllowHybridSleep = "no";
+    AllowSuspendThenHibernate = "yes";
 
-    HibernateDelaySec=1m
-  '';
+    HibernateDelaySec = "1m";
+  };
 }

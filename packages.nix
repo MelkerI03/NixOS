@@ -52,6 +52,10 @@
     age
     sops
 
+    vimgolf
+    snicat
+
+    fsuae-launcher
     (callPackage ./vulkan-hdr-layer.nix { pname = "vulkan-hdr-layer"; })
   ];
 }

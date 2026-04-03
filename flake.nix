@@ -48,7 +48,7 @@
             (
               { pkgs, ... }:
               {
-                nix.package = determinate-nix.packages.${pkgs.system}.default;
+                nix.package = determinate-nix.packages.${pkgs.stdenv.hostPlatform.system}.default;
               }
             )
           ];
