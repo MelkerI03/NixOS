@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   programs = {
-    virt-manager.enable = true;
+    # virt-manager.enable = true;
     zsh.enable = true;
   };
 
@@ -21,6 +21,7 @@
     gnupg
     usbutils
     audit
+    polkit_gnome
 
     adwaita-qt
     adwaita-icon-theme
@@ -44,6 +45,7 @@
     kitty
 
     # File tools & misc utilities
+    xfce.thunar
     rsyncy
     rclone
     xxd
@@ -51,11 +53,20 @@
     moreutils
     age
     sops
+    wireguard-tools
+    zap
+    graphviz
+    python313Packages.pygraphviz
+    python313Packages.graphviz
+    work-sans
+    winboat
 
     vimgolf
     snicat
 
     fsuae-launcher
     (callPackage ./vulkan-hdr-layer.nix { pname = "vulkan-hdr-layer"; })
+    vesktop
+    proton-authenticator
   ];
 }

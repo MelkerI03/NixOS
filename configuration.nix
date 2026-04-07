@@ -9,8 +9,10 @@
     ./power-management.nix
     ./nvidia.nix
     ./packages.nix
-    # ./sddm.nix
+    ./qemu.nix
   ];
+
+  users.extraGroups.vboxusers.members = [ "viking" ];
 
   nix = {
     settings = {
@@ -52,7 +54,7 @@
     };
 
     kernelParams = [
-      "usbcore.autosuspend=300"
+      "usbcore.autosuspend=-1"
     ];
     kernelModules = [
       "kvm" # For VMs
@@ -60,55 +62,15 @@
 
       "uvcvideo" # Webcam
     ];
-
-    resumeDevice = "/dev/disk/by-uuid/98e5f53b-7c04-430b-bd9b-baa5a88e2d65";
-  };
-
-  swapDevices = [
-    { device = "/dev/disk/by-uuid/98e5f53b-7c04-430b-bd9b-baa5a88e2d65"; }
-  ];
-
-  systemd.services."unload-thinkpad-acpi" = {
-    description = "Unload thinkpad_acpi before suspend";
-    wantedBy = [ "sleep.target" ];
-    before = [ "sleep.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.kmod}/bin/modprobe -r thinkpad_acpi";
-      ExecStop = "${pkgs.kmod}/bin/modprobe thinkpad_acpi";
-    };
-  };
-
-  hardware = {
-    bluetooth = {
-      enable = true;
-      powerOnBoot = true;
-    };
   };
 
   security = {
     polkit.enable = true;
     rtkit.enable = true;
-
-    pam.services = {
-      hyprlock = { };
-      kwallet = {
-        name = "kwallet";
-        enableKwallet = true;
-      };
-    };
   };
 
   networking = {
     hostName = "nixos";
-    nameservers = [
-      "192.168.0.1"
-      "1.1.1.1"
-    ];
-    networkmanager = {
-      enable = true;
-    };
-
     useDHCP = lib.mkDefault true;
   };
 
@@ -139,6 +101,7 @@
         "input"
         "network"
         "libvirtd"
+        "docker"
       ];
       shell = pkgs.zsh;
     };
@@ -151,13 +114,12 @@
     xwayland.enable = true;
   };
 
+  hardware.enableAllFirmware = true;
+
   #----=[ Services ]=----#
   services = {
     # Firmware
     fwupd.enable = true;
-
-    # Network
-    tailscale.enable = true;
 
     # Sound
     pulseaudio.enable = false;
@@ -191,14 +153,97 @@
       touchpad.accelProfile = "flat";
     };
 
-    # Enable CUPS to print documents.
-    printing.enable = true;
+    qbittorrent.enable = true;
 
-    # Bluetooth GUI
-    blueman.enable = true;
+    ntp.enable = true;
+  };
 
-    openssh.enable = true;
+  # Enable CUPS to print documents.
+  services.printing = {
+    enable = true;
+    cups-pdf.enable = true;
+    browsed.enable = false;
+    # browsedConf = ''
+    #   CreateIPPPrinterQueues None
+    #   CreateRemoteRawPrinterQueues no
+    # '';
+    drivers = with pkgs; [
+      gutenprint
+      hplip
+      cnijfilter2
+      hplipWithPlugin
+      cups-filters
+      cups-browsed
+    ];
+  };
+  services.avahi.enable = true;
+  # Discover printers
+  services.system-config-printer.enable = true;
+  systemd.services.add-network-printers = {
+    description = "Dynamically add available network printers to CUPS";
+    script = ''
+      ${pkgs.avahi}/bin/avahi-browse -rtp _ipp._tcp | while read -r line; do
+        if [[ "$line" == =* ]]; then
+          IP_ADDRESS=$(${pkgs.gawk}/bin/awk -F';' '{print $8}' <<< "$line")
+          RAW_NAME=$(${pkgs.gawk}/bin/awk -F';' '{print $4}' <<< "$line")
+          if [[ "$IP_ADDRESS" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            CLEAN_NAME=$(echo "$RAW_NAME" | ${pkgs.gnused}/bin/sed 's/\\032/ /g')
+            CLEAN_NAME=$(printf '%b\n' "$CLEAN_NAME")
+            LAST_OCTET=$(${pkgs.gawk}/bin/awk -F'.' '{print $4}' <<< "$IP_ADDRESS")
+            if [[ "$CLEAN_NAME" == *Color* ]]; then
+              QUEUE_NAME="COLOR''${LAST_OCTET}"
+            else
+              QUEUE_NAME="BW''${LAST_OCTET}"
+            fi
+            DEVICE_URI="ipp://$IP_ADDRESS/ipp/print"
+            echo "Adding printer: $QUEUE_NAME at $DEVICE_URI"
+            ${pkgs.cups}/bin/lpadmin -p "$QUEUE_NAME" -v "$DEVICE_URI" -m everywhere -E -o printer-is-shared=false
+          fi
+        fi
+      done
+    '';
 
+    after = [
+      "network-online.target"
+      "cups.service"
+    ];
+    wants = [ "cups.service" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig.Type = "oneshot";
+  };
+
+  systemd.services.create-user-pdf-links = {
+    description = "Create CUPS-PDF symlinks based on directories in /home";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+      # This provides all the necessary commands: basename, mkdir, ln, chown, etc.
+      path = [ pkgs.coreutils ];
+    };
+    script = ''
+      # Loop through every directory in /home
+      for homedir in /home/*; do
+        if [ -d "$homedir" ]; then
+          # Extract the username from the directory path
+          user=$(basename "$homedir")
+          # Define the paths
+          SPOOL_DIR="/var/spool/cups-pdf-pdf/users/$user"
+          LINK_NAME="$homedir/PDF"
+          # Create the spool directory as root
+          mkdir -p "$SPOOL_DIR"
+          # Set its ownership to the correct user
+          chown "$user":"users" "$SPOOL_DIR"
+          # Check if the symlink exists
+          if [ ! -e "$LINK_NAME" ]; then
+            # Create the symlink as root
+            ln -s "$SPOOL_DIR" "$LINK_NAME"
+            # Set the ownership of the symlink itself (-h flag) to the correct user
+            chown -h "$user":"users" "$LINK_NAME"
+          fi
+        fi
+      done
+    '';
   };
 
   # Set up virtualisation

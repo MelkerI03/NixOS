@@ -33,7 +33,10 @@
   };
 
   # Laptop lid switch handling
-  services.logind.settings.Login.HandleLidSwitch = "suspend-then-hibernate";
+  services.logind.settings.Login = {
+    HandleLidSwitch = "suspend-then-hibernate";
+    HandlePowerKey = "hibernate";
+  };
 
   systemd.sleep.settings.Sleep = {
     AllowSuspend = "yes";
