@@ -1,13 +1,15 @@
 { pkgs, ... }:
+
 {
   environment.systemPackages = with pkgs; [
-    virt-manager
-    spice-gtk
+    dnsmasq
+    phodav
     swtpm
   ];
+
   security.polkit.enable = true;
   virtualisation = {
-    # docker.enable = true;
+    docker.enable = true;
     libvirtd = {
       enable = false;
       qemu = {
@@ -15,11 +17,16 @@
         swtpm.enable = true;
       };
     };
+
     virtualbox.host = {
       enable = true;
       enableExtensionPack = true;
     };
-    spiceUSBRedirection.enable = true;
+    # spiceUSBRedirection.enable = true;
   };
-  users.extraGroups.vboxusers.members = [ "viking" ];
+
+  users.users.viking.extraGroups = [
+    "vboxusers"
+    "docker"
+  ];
 }

@@ -2,30 +2,40 @@
   description = "Configuration of vikings systems";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-    oldpkgs.url = "github:NixOS/nixpkgs/7d0ed7f2e5aea07ab22ccb338d27fbe347ed2f11"; # For kibana
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixos-hardware.url = "github:NixOS/nixos-hardware";
-    determinate-nix.url = "github:DeterminateSystems/nix";
+
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    determinate-nix = {
+      url = "github:DeterminateSystems/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     silentSDDM = {
       url = "github:uiriansan/SilentSDDM";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    sops-nix.url = "github:Mic92/sops-nix";
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     {
       nixpkgs,
-      oldpkgs,
       home-manager,
       nixos-hardware,
       determinate-nix,
-      silentSDDM,
       sops-nix,
       ...
     }:
@@ -34,42 +44,39 @@
     in
     {
       nixosConfigurations = {
-        nixos = nixpkgs.lib.nixosSystem {
+        laptop = nixpkgs.lib.nixosSystem {
           inherit system;
+
+          specialArgs = {
+            inherit
+              home-manager
+              nixos-hardware
+              sops-nix
+              determinate-nix
+              system
+              ;
+          };
+
           modules = [
-            ./configuration.nix
+            ./hosts/laptop
+          ];
+        };
 
-            (
-              { pkgs, ... }:
-              let
-                legacy = import oldpkgs {
-                  inherit system;
-                  config.allowUnfree = true;
-                };
-              in
-              {
-                _module.args.legacy = legacy;
+        work = nixpkgs.lib.nixosSystem {
+          inherit system;
 
-                nix.package = determinate-nix.packages.${pkgs.stdenv.hostPlatform.system}.default;
-              }
-            )
+          specialArgs = {
+            inherit
+              home-manager
+              nixos-hardware
+              sops-nix
+              determinate-nix
+              system
+              ;
+          };
 
-            { _module.args.silentSDDM = silentSDDM; }
-            ./sddm.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-            }
-            nixos-hardware.nixosModules.lenovo-thinkpad-p1
-            sops-nix.nixosModules.sops
-
-            (
-              { pkgs, ... }:
-              {
-                nix.package = determinate-nix.packages.${pkgs.stdenv.hostPlatform.system}.default;
-              }
-            )
+          modules = [
+            ./hosts/work
           ];
         };
       };
