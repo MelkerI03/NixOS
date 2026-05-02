@@ -110,49 +110,5 @@
       action = "<cmd>lua vim.diagnostic.goto_prev()<cr>";
       options.silent = true;
     }
-
-    #-------- ChatGPT ---------#
-
-    # Open main UI
-    {
-      mode = "n";
-      key = "<leader>cc";
-      action = "<cmd>ChatGPT<CR>";
-    }
-
-    # Edit selected code with instructions
-    {
-      mode = "v";
-      key = "<leader>ce";
-      action = "<cmd>ChatGPTEditWithInstructions<CR>";
-    }
-
-    # Fix bugs
-    {
-      mode = "v";
-      key = "<leader>cf";
-      action = "<cmd>ChatGPTRun fix_bugs<CR>";
-    }
-
-    # Explain code
-    {
-      mode = "v";
-      key = "<leader>cx";
-      action = "<cmd>ChatGPTRun explain_code<CR>";
-    }
-
-    # Optimize code
-    {
-      mode = "v";
-      key = "<leader>co";
-      action = "<cmd>ChatGPTRun optimize_code<CR>";
-    }
-
-    # Generate docstring
-    {
-      mode = "v";
-      key = "<leader>cd";
-      action = "<cmd>ChatGPTRun docstring<CR>";
-    }
   ];
 }
