@@ -1,4 +1,4 @@
-{ ... }:
+{ inputs, ... }:
 
 {
   imports = [
@@ -30,7 +30,15 @@
     ../../modules/services/virtualization.nix
     ../../modules/services/wireguard.nix
     ../../modules/services/misc.nix
+
+    inputs.home-manager.nixosModules.home-manager
   ];
+
+  home-manager.extraSpecialArgs = {
+    inherit inputs;
+  };
+
+  home-manager.users.viking = import ./home.nix;
 
   nvidia.enable = false;
 

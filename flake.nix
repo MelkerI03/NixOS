@@ -3,19 +3,15 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    nixos-hardware = {
-      url = "github:NixOS/nixos-hardware";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     determinate-nix = {
       url = "github:DeterminateSystems/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    home-manager = {
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -28,15 +24,36 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixploit = {
+      url = "github:MelkerI03/nixploit";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    catppuccin = {
+      url = "github:catppuccin/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    {
+    inputs@{
       nixpkgs,
-      home-manager,
-      nixos-hardware,
-      determinate-nix,
-      sops-nix,
       ...
     }:
     let
@@ -48,13 +65,7 @@
           inherit system;
 
           specialArgs = {
-            inherit
-              home-manager
-              nixos-hardware
-              sops-nix
-              determinate-nix
-              system
-              ;
+            inherit inputs system;
           };
 
           modules = [
@@ -66,13 +77,7 @@
           inherit system;
 
           specialArgs = {
-            inherit
-              home-manager
-              nixos-hardware
-              sops-nix
-              determinate-nix
-              system
-              ;
+            inherit inputs system;
           };
 
           modules = [

@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, inputs, ... }:
 
 {
   imports = [
@@ -27,7 +27,15 @@
     ../../modules/services/wireguard.nix
     ../../modules/services/desktop.nix
     ../../modules/services/misc.nix
+
+    inputs.home-manager.nixosModules.home-manager
   ];
+
+  home-manager.extraSpecialArgs = {
+    inherit inputs;
+  };
+
+  home-manager.users.viking = import ./home.nix;
 
   networking.hostName = "work";
 

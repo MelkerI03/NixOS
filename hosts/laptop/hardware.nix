@@ -5,7 +5,7 @@
   config,
   lib,
   modulesPath,
-  nixos-hardware,
+  inputs,
   ...
 }:
 
@@ -13,7 +13,7 @@
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
 
-    nixos-hardware.nixosModules.lenovo-thinkpad-p1
+    inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p1
   ];
 
   boot.initrd.availableKernelModules = [

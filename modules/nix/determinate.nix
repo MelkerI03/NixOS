@@ -1,5 +1,5 @@
-{ determinate-nix, system, ... }:
+{ inputs, system, ... }:
 
 {
-  nix.package = determinate-nix.packages.${system}.default;
+  nix.package = inputs.determinate-nix.packages.${system}.default;
 }
