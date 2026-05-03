@@ -105,6 +105,10 @@ in
         };
       };
 
+      environment.sessionVariables = {
+        AQ_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0"; # Hyprland use iGPU as primary
+      };
+
       boot.initrd.kernelModules = [
         "nvidia"
         "nvidia_drm"

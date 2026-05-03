@@ -5,6 +5,5 @@
     "XCURSOR_THEME, Adwaita"
     "TK_THEME, Adwaita-dark"
     "GTK_THEME, Adwaita:dark"
-    "AQ_DRM_DEVICES, /dev/dri/card1:/dev/dri/card0"
   ];
 }
