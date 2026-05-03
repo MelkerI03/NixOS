@@ -16,6 +16,26 @@ in
 
     "${mod}, Q, killactive"
 
+    "${mod}, 1, workspace, 1"
+    "${mod}, 2, workspace, 2"
+    "${mod}, 3, workspace, 3"
+    "${mod}, 4, workspace, 4"
+    "${mod}, 5, workspace, 5"
+    "${mod}, 6, workspace, 6"
+    "${mod}, 7, workspace, 7"
+    "${mod}, 8, workspace, 8"
+    "${mod}, 9, workspace, 9"
+
+    "${mod}, H, movefocus, l"
+    "${mod}, J, movefocus, d"
+    "${mod}, K, movefocus, u"
+    "${mod}, L, movefocus, r"
+
+    "${mod} SHIFT, H, movewindow, l"
+    "${mod} SHIFT, J, movewindow, d"
+    "${mod} SHIFT, K, movewindow, u"
+    "${mod} SHIFT, L, movewindow, r"
+
     "${mod}, TAB, workspace, r+1"
     "${mod} SHIFT, TAB, workspace, r-1"
 
