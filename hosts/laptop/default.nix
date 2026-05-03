@@ -23,7 +23,7 @@
 
     ../../modules/hardware/bluetooth.nix
     ../../modules/hardware/firmware.nix
-    ../../modules/hardware/nvidia.nix
+    ../../modules/hardware/graphics.nix
 
     ../../modules/services/audio.nix
     ../../modules/services/desktop.nix
@@ -40,7 +40,14 @@
 
   home-manager.users.viking = import ./home.nix;
 
-  nvidia.enable = false;
+  my.graphics = {
+    mode = "offload";
+
+    nvidia = {
+      intelBusId = "PCI:0:2:0";
+      nvidiaBusId = "PCI:1:0:0";
+    };
+  };
 
   system.stateVersion = "25.05";
 }
