@@ -5,34 +5,31 @@
   config,
   lib,
   modulesPath,
-  nixos-hardware,
   ...
 }:
 
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
-
-    nixos-hardware.nixosModules.lenovo-thinkpad-p1
   ];
 
   boot.initrd.availableKernelModules = [
     "xhci_pci"
-    "thunderbolt"
+    "ahci"
     "nvme"
-    "rtsx_pci_sdmmc"
+    "usbhid"
   ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
-    device = "/dev/disk/by-label/nixos";
+    device = "/dev/disk/by-label/root";
     fsType = "ext4";
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-label/boot";
+    device = "/dev/disk/by-partlabel/EFI";
     fsType = "vfat";
     options = [
       "fmask=0077"
@@ -40,9 +37,7 @@
     ];
   };
 
-  swapDevices = [
-    { device = "/dev/disk/by-label/swap"; }
-  ];
+  swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

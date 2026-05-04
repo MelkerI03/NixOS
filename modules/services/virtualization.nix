@@ -4,6 +4,7 @@
   environment.systemPackages = with pkgs; [
     dnsmasq
     phodav
+    spice-gtk
     swtpm
   ];
 
