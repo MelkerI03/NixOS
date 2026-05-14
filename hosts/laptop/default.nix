@@ -40,8 +40,10 @@
 
   home-manager.users.viking = import ./home.nix;
 
+  networking.hostName = "laptop";
+
   my.graphics = {
-    mode = "offload";
+    mode = "intel";
 
     nvidia = {
       intelBusId = "PCI:0:2:0";

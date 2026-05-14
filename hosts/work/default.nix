@@ -42,5 +42,14 @@
   networking.wireless.enable = lib.mkForce false;
   hardware.bluetooth.enable = false;
 
+  my.graphics = {
+    mode = "intel";
+
+    nvidia = {
+      intelBusId = "PCI:0:2:0";
+      nvidiaBusId = "PCI:1:0:0";
+    };
+  };
+
   system.stateVersion = "25.05";
 }

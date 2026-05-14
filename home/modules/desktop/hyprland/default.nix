@@ -24,6 +24,8 @@
   wayland.windowManager.hyprland = {
     enable = true;
 
+    configType = "hyprlang"; # TODO: Migrate to lua generated configuration
+
     extraConfig = ''
       source = ${config.xdg.configHome}/hypr/noctalia/noctalia-colors.conf
     '';
