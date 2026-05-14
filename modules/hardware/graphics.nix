@@ -36,6 +36,8 @@ in
     # Intel only
     (lib.mkIf (cfg.mode == "intel") {
       services.xserver.videoDrivers = [ "modesetting" ];
+
+      boot.kernelParams = [ "i915.enable_psr=1" ];
     })
 
     # NVIDIA only
