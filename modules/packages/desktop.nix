@@ -3,7 +3,6 @@
 {
   environment.systemPackages = with pkgs; [
     chromium
-    librewolf
     kitty
     thunar
     vesktop

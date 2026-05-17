@@ -8,7 +8,6 @@ let
   configDir = config.xdg.configHome;
 in
 {
-  # import the home manager module
   imports = [
     inputs.noctalia.homeModules.default
   ];
