@@ -20,8 +20,6 @@
     };
 
     extraConfig = ''
-      shell tmux
-
       # Catppuccin theme
       color0 #45475a
       color1 #f38ba8
